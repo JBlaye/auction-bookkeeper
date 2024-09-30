@@ -9,11 +9,11 @@ A lightweight script which aims to simplify the organizational back-end, so to s
 
 #### (Note on dependencies)
 
-If installing 'python-escpos' via pip, be sure to specify the 'usb' dependency:
+If installing `python-escpos` via pip, be sure to specify the `usb` dependency:
 
 	pip install python-escpos[usb]
 
-While the 'usb' dependency in this reference is indeed an older fork of 'pyusb', it is recommended to use the dependency in which it was built on. 
+While the `usb` dependency in this reference is indeed an older fork of `pyusb`, it is recommended to use the dependency in which it was built on. 
 
 ### Descritpion
 
