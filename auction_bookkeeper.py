@@ -27,6 +27,7 @@ Desc:
 	- Create better ui for program - formatted cli or gui?
 
 """
+
 import json
 import commands as cds
 
@@ -34,12 +35,27 @@ import commands as cds
 items = {}
 bidders = {}
 
-# Populate dicts with data from persistent json
-with open("items.txt", "r", encoding="utf-8") as f:
-	items = json.load(f)
+# Populate dicts with data from persistent json & create empty files
+# if either does not already exist
+try:
+	with open("items.txt", "r", encoding="utf-8") as f:
+		items = json.load(f)
+except:
+	print("{}'Items' File Not Found - Creating empty file".format(
+		cds.PREFIX_MSG))
+	with open("items.txt", "x", encoding="utf-8"):
+		pass
 
-with open("bidders.txt", "r", encoding="utf-8") as f:
-	bidders = json.load(f)
+
+try:
+	with open("bidders.txt", "r", encoding="utf-8") as f:
+		bidders = json.load(f)
+except:
+	print("{}'Bidders' File Not Found - Creating empty file".format(
+		cds.PREFIX_MSG))
+	with open("bidders.txt", "x", encoding="utf-8"):
+		pass
+
 
 # Init Possible command inputs tuple
 cds_list = ("exit", "help", "additem", "remitem", "addbid", "rembid",

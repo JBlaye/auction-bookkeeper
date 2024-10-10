@@ -3,20 +3,37 @@ Desc:
 	Helper module containing the majority of function definitions used
 	by the main program: auction_bookkeeper.py. This is to help with
 	code oraganization and readability.
-"""
+""" 
 
 import openpyxl as xl
 from escpos import escpos, printer
 import json
 from datetime import date
 
-p = printer.Usb(0x04b8, 0x0e28)
-p.text("\n\n\nInitialized\n\n")
-p.cut()
 
 # Input prefix constants
 PREFIX_IN = ")> "
 PREFIX_MSG = ")* "
+PREFIX_ERROR = "(!) ERROR (!)"
+
+# Try initializing printer object & set a null object to disable
+# all printer functions if printer is not properly initialized
+try:
+	p = printer.Usb(0x04b8, 0x0e28)
+	p.text("\n\n\nInitialized\n\n")
+	p.cut()
+
+except:
+	print(PREFIX_ERROR, """
+USB Printer Not Found!
+	--Continuing execution, printer functions are disabled--
+
+	Printer is either disconnected or unique id is not defined.
+	Restart program with printer connected to resume normal operation.
+		""")
+
+	p = None
+
 
 def addItem(items):
 	"""
@@ -164,6 +181,11 @@ def pBid():
 
 
 def rec(items, bidders, usr_args):
+	# Check if printer has been properly initialized
+	if p == None:
+		print(PREFIX_MSG + "Printer functions disabled.")
+		return
+
 	# Create temp dict ref for nested dict at 'entry'
 	tmp_bidder = bidders[usr_args[1]]
 
