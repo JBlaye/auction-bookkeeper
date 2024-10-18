@@ -99,7 +99,7 @@ def remItem(items, usr_args):
 		return
 
 	try:
-		del items[usr_in]
+		del items[str(usr_in)]
 
 	except KeyError:
 		print(PREFIX_MSG + "Error: Invalid item #")
@@ -132,7 +132,7 @@ def remBid(bidders, usr_args):
 		return
 
 	try:
-		del bidders[usr_in]
+		del bidders[str(usr_in)]
 
 	except KeyError:
 		print(PREFIX_MSG + "Error: Invalid bidder #")
@@ -154,7 +154,7 @@ def eBid():
 def sDict(items, bidders, usr_args):
 	# If user added 'i' option, save items dict into json
 	if "i" in usr_args:
-		print(PREFIX_MSG + "Saving items...")
+		print(PREFIX_MSG + "Saving Items...")
 		with open("items.txt", "w", encoding="utf-8") as f:
 			json.dump(items, f)
 
@@ -162,7 +162,7 @@ def sDict(items, bidders, usr_args):
 
 	# If user added 'b' option, save bidders dict into json
 	if "b" in usr_args:
-		print(PREFIX_MSG + "Saving bidders...")
+		print(PREFIX_MSG + "Saving Bidders...")
 		with open("bidders.txt", "w", encoding="utf-8") as f:
 			json.dump(bidders, f)
 
@@ -194,11 +194,15 @@ def lDict(items, bidders, usr_args):
 def cDict(items, bidders, usr_args):
 	# If user added 'i' option, empty the items dict
 	if "i" in usr_args:
+		print(PREFIX_MSG + "Clearing Items...")
 		items.clear()
+		print(PREFIX_MSG + "Finished")
 
 	# If user added 'b' option, empty the bidders dict
 	if "b" in usr_args:
+		print(PREFIX_MSG + "Clearing Bidders...")
 		bidders.clear()
+		print(PREFIX_MSG + "Finished")
 
 	return
 
@@ -285,7 +289,7 @@ def sold(items, bidders, usr_args):
 
 def loadXL(items):
 	# Create workbook object and select worksheet
-	wb = xl.load_workbook("Missions Auction Donations - 9.23.23.xlsx")
+	wb = xl.load_workbook("Missions Auction Donations.xlsx")
 	ws = wb["Items and Donators"]
 
 	# Iterate thru each row and create a nested dict for each entry
