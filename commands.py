@@ -16,6 +16,7 @@ PREFIX_IN = ")> "
 PREFIX_MSG = ")* "
 PREFIX_ERROR = "(!) ERROR (!)"
 
+
 # Try initializing printer object & set a null object to disable
 # all printer functions if printer is not properly initialized
 try:
@@ -51,6 +52,7 @@ def canUse(usr_in, val):
 def addItem(items):
 	"""
 	"""
+	print(PREFIX_MSG + "Not yet implemented")
 	pass 
 	"""
 	# Create entry # ID and nested dictionary
@@ -92,18 +94,24 @@ def addItem(items):
 def remItem(items, usr_args):
 	# Remove item entry and data from main 'items' dict
 
-	usr_in = canUse(usr_args[1], val=float)
+	usr_in = canUse(usr_args[1], val=int)
 	if not usr_in:
 		return
 
-	del items[usr_args[1]]
+	try:
+		del items[usr_in]
+
+	except KeyError:
+		print(PREFIX_MSG + "Error: Invalid item #")
+		return
+
 	print(PREFIX_MSG + "Item entry deleted")
 
 
 def addBid(bidders):
 	# Create new bidder entry
 	print("\nEnter bidder #:")
-	entry = input(PREFIX_IN)
+	entry_num = input(PREFIX_IN)
 
 	print("\nEnter First & Last Name:")
 	name = input(PREFIX_IN)
@@ -112,21 +120,34 @@ def addBid(bidders):
 	phone = input(PREFIX_IN)
 
 	# Create nested dict
-	bidders[entry] = dict([("name", name), ("phone", phone), ("items", [])])
+	bidders[entry_num] = dict([("name", name), ("phone", phone), ("items", [])])
 
 	return
 
 
 def remBid(bidders, usr_args):
 	# Remove bidder entry and data from main 'bidders' dict
-	del bidders[usr_args[1]]
+	usr_in = canUse(usr_args[1], val=int)
+	if not usr_in:
+		return
+
+	try:
+		del bidders[usr_in]
+
+	except KeyError:
+		print(PREFIX_MSG + "Error: Invalid bidder #")
+		return
+
+	print(PREFIX_MSG + "Bidder entry deleted.")
 
 
 def eItem():
+	print(PREFIX_MSG + "Not yet implemented")
 	pass
 
 
 def eBid():
+	print(PREFIX_MSG + "Not yet implemented")
 	pass
 
 
@@ -183,18 +204,22 @@ def cDict(items, bidders, usr_args):
 
 
 def dItem():
+	print(PREFIX_MSG + "Not yet implemented")
 	pass
 
 
 def dBid():
+	print(PREFIX_MSG + "Not yet implemented")
 	pass
 
 
 def pItem():
+	print(PREFIX_MSG + "Not yet implemented")
 	pass
 
 
 def pBid():
+	print(PREFIX_MSG + "Not yet implemented")
 	pass
 
 
@@ -242,7 +267,7 @@ def sold(items, bidders, usr_args):
 		tmp_items = items[usr_args[1]]
 		tmp_bidders = bidders[usr_args[2]]
 	except (IndexError, KeyError):
-		print(PREFIX_MSG + "Invalid Format")
+		print(PREFIX_MSG + "Error :Invalid Entry")
 		return
 
 	try:

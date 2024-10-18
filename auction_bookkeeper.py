@@ -68,7 +68,7 @@ def display_help():
 Available Commands: (Note: not case sensitive)
 exit - Exits the program
 
-help - Displays this msg
+help - Displays this message
 
 addItem - Prompts user to add item entry
 
@@ -86,15 +86,15 @@ eBid - Allows user to edit details of a bidder entry
 
 sDict - Saves current items and/or bidders to respective files
 	format: sDict 'dict-letter' 'dict-letter'
-	enter 'i' for 'items' dict OR 'b' for 'bidders' dict
+	enter 'i' for 'items' dict AND/OR 'b' for 'bidders' dict
 
 lDict - Loads items and/or bidders from respective files
 	format: lDict 'dict-letter' 'dict-letter'
-	enter 'i' for 'items' dict OR 'b' for 'bidders' dict
+	enter 'i' for 'items' dict AND/OR 'b' for 'bidders' dict
 
 cDict - clear dictionary
 	format: cDict 'dict-letter' 'dict-letter'
-	enter 'i' for 'items' dict OR 'b' for 'bidders' dict
+	enter 'i' for 'items' dict AND/OR 'b' for 'bidders' dict
 
 dItem - Displays information about item entry, requires item #
 
@@ -142,7 +142,13 @@ while main_loop:
 
 	# Remove item command
 	elif usr_in[0].lower() == cds_list[3]:
-		cds.remItem(items, usr_in)
+		# Check if the user forgot to add args to the command
+		if len(usr_in) <= 1:
+			print(cds.PREFIX_MSG + "Error: Missing command args")
+			continue
+
+		else:
+			cds.remItem(items, usr_in)
 
 	# Add bidder command
 	elif usr_in[0].lower() == cds_list[4]:
@@ -150,7 +156,13 @@ while main_loop:
 
 	# Remove bidder command
 	elif usr_in[0].lower() == cds_list[5]:
-		cds.remBid(bidders, usr_in)
+		# Check if the user forgot to add args to the command
+		if len(usr_in) <= 1:
+			print(cds.PREFIX_MSG + "Error: Missing command args")
+			continue
+
+		else:
+			cds.remBid(bidders, usr_in)
 
 	# Edit item command
 	elif usr_in[0].lower() == cds_list[6]:
@@ -162,15 +174,33 @@ while main_loop:
 
 	# Save dictionary command
 	elif usr_in[0].lower() == cds_list[8]:
-		cds.sDict(items, bidders, usr_in)
+		# Check if the user forgot to add args to the command
+		if len(usr_in) <= 1:
+			print(cds.PREFIX_MSG + "Error: Missing command args")
+			continue
+
+		else:
+			cds.sDict(items, bidders, usr_in)
 
 	# Load dictionary command
 	elif usr_in[0].lower() == cds_list[9]:
-		cds.lDict(items, bidders, usr_in)
+		# Check if the user forgot to add args to the command
+		if len(usr_in) <= 1:
+			print(cds.PREFIX_MSG + "Error: Missing command args")
+			continue
+
+		else:
+			cds.lDict(items, bidders, usr_in)
 
 	# Clear dictionary command
 	elif usr_in[0].lower() == cds_list[10]:
-		cds.cDict(items, bidders, usr_in)
+		# Check if the user forgot to add args to the command
+		if len(usr_in) <= 1:
+			print(cds.PREFIX_MSG + "Error: Missing command args")
+			continue
+
+		else:
+			cds.cDict(items, bidders, usr_in)
 
 	# Display item command
 	elif usr_in[0].lower() == cds_list[11]:
@@ -194,7 +224,13 @@ while main_loop:
 
 	# Item sold command
 	elif usr_in[0].lower() == cds_list[16]:
-		cds.sold(items, bidders, usr_in)
+		# Check if the user forgot to add args to the command
+		if len(usr_in) <= 3:
+			print(cds.PREFIX_MSG + "Error: Missing command args")
+			continue
+
+		else:
+			cds.sold(items, bidders, usr_in)
 
 	# Load XL document command
 	elif usr_in[0].lower() == cds_list[17]:
