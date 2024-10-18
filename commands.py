@@ -35,6 +35,19 @@ USB Printer Not Found!
 	p = None
 
 
+def canUse(usr_in, val):
+	"""A function used throughout to ensure that when the user inputs
+	a command, their input can be used as the desired type and converts
+	their input according to the set parameter type of 'val'"""
+
+	try:
+		return val(usr_in)
+
+	except ValueError:
+		print(PREFIX_MSG + "Error: Invalid Command Value")
+		return False
+
+
 def addItem(items):
 	"""
 	"""
@@ -78,6 +91,11 @@ def addItem(items):
 
 def remItem(items, usr_args):
 	# Remove item entry and data from main 'items' dict
+
+	usr_in = canUse(usr_args[1], val=float)
+	if not usr_in:
+		return
+
 	del items[usr_args[1]]
 	print(PREFIX_MSG + "Item entry deleted")
 
