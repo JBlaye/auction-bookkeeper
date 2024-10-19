@@ -59,10 +59,10 @@ except:
 
 # Init Possible command inputs tuple
 cds_list = ("exit", "help", "additem", "remitem", "addbid", "rembid",
-			"eitem", "ebid", "sdict", "ldict", "cdict", "ditem", "dbid", "pitem",
-			"pbid", "rec", "sold", "loadxl", "total")
+			"eitem", "ebid", "sdict", "ldict", "cdict", "ditem", "dbid",
+			"pitem", "pbid", "rec", "sold", "loadxl", "total")
 
-# Display help function, displays available comamnds with some help text
+# Display help function, displays available commands with some help text
 def display_help():
 	print("""
 Available Commands: (Note: not case sensitive)

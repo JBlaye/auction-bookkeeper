@@ -1,8 +1,37 @@
-"""
-Desc:
-	Helper module containing the majority of function definitions used
-	by the main program: auction_bookkeeper.py. This is to help with
-	code oraganization and readability.
+"""Helper Module defining command & utility functions
+
+This module defines each function called on when the user enters any
+one of the valid commands, as determined by the main script, as well as
+a few utility functions.
+
+It also contains a few string constants like 'PREFIX_IN' to use with any 
+messages or prompts.
+
+Attributes:
+	PREFIX_IN: a string constant for input prompt
+	PREFIX_MSG: a string constant for returning msgs from script
+	PREFIX_ERROR: a string constant for displaying important error msgs
+
+Functions:
+	addItem: Prompts user to add a new auction item to 'items' dict
+	remItem: Removes entered item from 'items' dict
+	addBid: Prompts user to add a new auction bidder to 'bidder' dict
+	remBid: Removes entered bidder from 'bidder' dict
+	eItem: Not yet implemented
+	eBid: Not yet implemented
+	sDict: Saves 'items' AND/OR 'bidders' dicts to persistent file
+	lDict: Loads 'items' AND/OR 'bidders' dicts from persistent file
+	cDict: Clears 'items' AND/OR 'bidders' dicts of all data in memory
+	dItem: Not yet implemented
+	dBid: Not yet implemented
+	pItem: Not yet implemented
+	pBid: Not yet implemented
+	rec: Prints reciept for entered bidder
+	sold: Records item bought by a bidder, along with purchased price
+	loadXL: Loads 'items' dict data from local XL file
+	totalAmt: Displays total profit of auction
+
+ToDo:
 """ 
 
 import openpyxl as xl
