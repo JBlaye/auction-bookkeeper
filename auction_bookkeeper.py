@@ -31,15 +31,15 @@ Desc:
 import json
 import commands as cds
 
-# Init Dicts
-items = {}
-bidders = {}
+# Init 'items' & 'bidders' lists
+items = []
+bidders = []
 
 # Populate dicts with data from persistent json & create empty files
 # if either does not already exist
 try:
-	with open("items.txt", "r", encoding="utf-8") as f:
-		items = json.load(f)
+	
+
 except:
 	print("{}'Items' File Not Found - Creating empty file".format(
 		cds.PREFIX_MSG))
@@ -48,8 +48,8 @@ except:
 
 
 try:
-	with open("bidders.txt", "r", encoding="utf-8") as f:
-		bidders = json.load(f)
+	
+	
 except:
 	print("{}'Bidders' File Not Found - Creating empty file".format(
 		cds.PREFIX_MSG))

@@ -78,9 +78,27 @@ def canUse(usr_in, val):
 		return False
 
 
+def pack(list):
+	"""Returns a single list used to store 'items' and 'bidders' in json"""
+
+
+
+
+def unpackItems(list):
+	"""Returns the useable 'items' list of objects"""
+
+
+
+
+def unpackBidders(list):
+	"""Returns the useable 'bidders' list of objects"""
+
+	
+
+
 def addItem(items):
-	"""
-	"""
+	""""""
+
 	print(PREFIX_MSG + "Not yet implemented")
 	pass 
 	"""
