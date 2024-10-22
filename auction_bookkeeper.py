@@ -30,15 +30,18 @@ Desc:
 
 import json
 import commands as cds
+from itemclass import Item
+from bidderclass import Bidder
 
-# Init 'items' & 'bidders' lists
-items = []
-bidders = []
+# Init 'items' & 'bidders' dicts
+items = {}
+bidders = {}
 
-# Populate dicts with data from persistent json & create empty files
+# Populate lists with data from persistent json & create empty files
 # if either does not already exist
 try:
-	
+	with open("items.txt", "r", encoding="utf-8") as rf:
+		items = json.load(rf)
 
 except:
 	print("{}'Items' File Not Found - Creating empty file".format(
@@ -48,7 +51,8 @@ except:
 
 
 try:
-	
+	with open("bidders.txt", "r", encoding="utf-8") as rf:
+		bidders = json.load(rf)
 	
 except:
 	print("{}'Bidders' File Not Found - Creating empty file".format(
@@ -241,11 +245,12 @@ while main_loop:
 		cds.totalAmt(items, bidders)
 
 # Save current 'items' & 'bidders' dicts to json before exiting
-with open("items.txt", "w", encoding="utf-8") as f:
-	json.dump(items, f)
+with open("items.txt", "w", encoding="utf-8") as wf:
+	
 
-with open("bidders.txt", "w", encoding="utf-8") as f:
-	json.dump(bidders, f)
+with open("bidders.txt", "w", encoding="utf-8") as wf:
+	
+
 
 # Exit msg
 print("\n)* Program Exited\n")

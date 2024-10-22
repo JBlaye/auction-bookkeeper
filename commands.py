@@ -38,6 +38,8 @@ import openpyxl as xl
 from escpos import escpos, printer
 import json
 from datetime import date
+from itemclass import Item
+from bidderclass import Bidder
 
 
 # Input prefix constants
@@ -78,20 +80,48 @@ def canUse(usr_in, val):
 		return False
 
 
-def pack(list):
-	"""Returns a single list used to store 'items' and 'bidders' in json"""
+def pack(dict_in):
+	"""Returns a single dict used to store 'items' or 'bidders' in json
+	
+	Arguments:
+		- dict_in
+
+	Converts dict_in, a dictionary full of objects, into a dictionary
+	full of lists. Uses the instance method exp() to get a list representation of all its
+	fields so that it can be stored as a dictionary of lists in json."""
+
+	packed_dict = {}
+
+	if len(dict_in) == 0:
+		return dict_in
+
+	else:
+		for obj in dict_in:
+			packed_list.append(obj.exp())
+
+		return packed_list
 
 
 
-
-def unpackItems(list):
+def unpackItems(list_in):
 	"""Returns the useable 'items' list of objects"""
+	pass
+	"""
+	items_list = []
 
+	if len(list_in) == 0:
+		return list_in
 
+	else:
+		for element in list_in:
+			items_list.append(Item(data_in=element))
 
+		return items_list
+	"""
 
-def unpackBidders(list):
+def unpackBidders(list_in):
 	"""Returns the useable 'bidders' list of objects"""
+	pass
 
 	
 
@@ -163,11 +193,10 @@ def addBid(bidders):
 	print("\nEnter First & Last Name:")
 	name = input(PREFIX_IN)
 
-	print("\nEnter Phone #:")
-	phone = input(PREFIX_IN)
-
 	# Create nested dict
-	bidders[entry_num] = dict([("name", name), ("phone", phone), ("items", [])])
+	bidders[entry_num] = Bidder()
+	bidders[entry_num].id = entry_num
+	bidders[entry_num].name = name
 
 	return
 
