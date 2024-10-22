@@ -41,7 +41,7 @@ bidders = {}
 # if either does not already exist
 try:
 	with open("items.txt", "r", encoding="utf-8") as rf:
-		items = json.load(rf)
+		items = cds.unpack(json.load(rf), Item)
 
 except:
 	print("{}'Items' File Not Found - Creating empty file".format(
@@ -52,7 +52,7 @@ except:
 
 try:
 	with open("bidders.txt", "r", encoding="utf-8") as rf:
-		bidders = json.load(rf)
+		bidders = cds.unpack(json.load(rf), Bidder)
 	
 except:
 	print("{}'Bidders' File Not Found - Creating empty file".format(
@@ -246,10 +246,10 @@ while main_loop:
 
 # Save current 'items' & 'bidders' dicts to json before exiting
 with open("items.txt", "w", encoding="utf-8") as wf:
-	
+	json.dump(cds.pack(items), wf, indent=4)
 
 with open("bidders.txt", "w", encoding="utf-8") as wf:
-	
+	json.dump(cds.pack(bidders), wf, indent=4)	
 
 
 # Exit msg

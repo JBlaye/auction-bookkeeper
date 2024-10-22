@@ -13,6 +13,8 @@ Attributes:
 	PREFIX_ERROR: a string constant for displaying important error msgs
 
 Functions:
+	pack: Returns a single dict used to store data in json
+	unpack: Returns a useable dict, populated with objects
 	addItem: Prompts user to add a new auction item to 'items' dict
 	remItem: Removes entered item from 'items' dict
 	addBid: Prompts user to add a new auction bidder to 'bidder' dict
@@ -81,49 +83,42 @@ def canUse(usr_in, val):
 
 
 def pack(dict_in):
-	"""Returns a single dict used to store 'items' or 'bidders' in json
-	
+	"""Returns a single dict used to store data in json
+
 	Arguments:
 		- dict_in
 
 	Converts dict_in, a dictionary full of objects, into a dictionary
-	full of lists. Uses the instance method exp() to get a list representation of all its
-	fields so that it can be stored as a dictionary of lists in json."""
-
-	packed_dict = {}
+	full of lists. Uses the instance method exp() to get a list
+	representation of all its fields so that it can be stored as a
+	dictionary of lists in json."""
 
 	if len(dict_in) == 0:
 		return dict_in
 
-	else:
-		for obj in dict_in:
-			packed_list.append(obj.exp())
+	elif len(dict_in) >= 1:
+		packed_dict = {}
 
-		return packed_list
+		for k, obj in dict_in.items():
+			packed_dict[k] = obj.exp()
+
+		return packed_dict
 
 
 
-def unpackItems(list_in):
-	"""Returns the useable 'items' list of objects"""
-	pass
-	"""
-	items_list = []
-
-	if len(list_in) == 0:
-		return list_in
-
-	else:
-		for element in list_in:
-			items_list.append(Item(data_in=element))
-
-		return items_list
-	"""
-
-def unpackBidders(list_in):
-	"""Returns the useable 'bidders' list of objects"""
-	pass
-
+def unpack(dict_in, obj):
+	"""Returns a useable dict, populated with objects"""
 	
+	if len(dict_in) == 0:
+		return dict_in
+
+	elif len(dict_in) >= 1:
+		unpacked_dict = {}
+
+		for k, list_obj in dict_in.items():
+			unpacked_dict[k] = obj(data_in=list_obj)
+
+		return unpacked_dict
 
 
 def addItem(items):
@@ -231,16 +226,16 @@ def sDict(items, bidders, usr_args):
 	# If user added 'i' option, save items dict into json
 	if "i" in usr_args:
 		print(PREFIX_MSG + "Saving Items...")
-		with open("items.txt", "w", encoding="utf-8") as f:
-			json.dump(items, f)
+		with open("items.txt", "w", encoding="utf-8") as wf:
+			json.dump(pack(items), wf, indent=4)
 
 		print(PREFIX_MSG + "Finished")
 
 	# If user added 'b' option, save bidders dict into json
 	if "b" in usr_args:
 		print(PREFIX_MSG + "Saving Bidders...")
-		with open("bidders.txt", "w", encoding="utf-8") as f:
-			json.dump(bidders, f)
+		with open("bidders.txt", "w", encoding="utf-8") as wf:
+			json.dump(pack(bidders), wf, indent=4)
 
 		print(PREFIX_MSG + "Finished")
 
@@ -251,16 +246,16 @@ def lDict(items, bidders, usr_args):
 	# If user added 'i' option, load items dict from json
 	if "i" in usr_args:
 		print(PREFIX_MSG + "Loading items...")
-		with open("items.txt", "r", encoding="utf-8") as f:
-			items = json.load(f)
+		with open("items.txt", "r", encoding="utf-8") as rf:
+			items = unpack(json.load(rf), Item)
 
 		print(PREFIX_MSG + "Finished")
 
 	# If user added 'b' option, load bidders dict from json
 	if "b" in usr_args:
 		print(PREFIX_MSG + "Loading bidders...")
-		with open("bidders.txt", "r", encoding="utf-8") as f:
-			bidders = json.load(f)
+		with open("bidders.txt", "r", encoding="utf-8") as rf:
+			bidders = unpack(json.load(rf), Bidder)
 
 		print(PREFIX_MSG + "Finished")
 
@@ -341,67 +336,79 @@ def rec(items, bidders, usr_args):
 
 
 def sold(items, bidders, usr_args):
-	# Quickly add item entry to list of items bought for bidder
-	# and set bought price in respective item entry
-	try:
-		tmp_items = items[usr_args[1]]
-		tmp_bidders = bidders[usr_args[2]]
-	except (IndexError, KeyError):
-		print(PREFIX_MSG + "Error :Invalid Entry")
+	"""Add item to bidder 'cart' and set the bid 'price' of the item"""
+	
+	item_id = usr_args[1]
+	bidder_id = usr_args[2]
+	sold_price = canUse(usr_args[3], float)
+
+	if not sold_price:
+ 		return
+
+	elif item_id not in items or bidder_id not in bidders:
+		print(PREFIX_MSG + "Error: Invalid item or bidder ID#")
 		return
 
-	try:
-		tmp_items["price"] = float(usr_args[3])
-
-	except:
-		print(PREFIX_MSG + "Invalid Price")
-		tmp_items["price"] = 0.0
-
-	items_bought = tmp_bidders["items"]
-	items_bought.append(usr_args[1])
-
-	return
+	else:
+		items[item_id].price = sold_price
+		bidders[bidder_id].cart.append(str(items[item_id].id))
 
 
 def loadXL(items):
-	# Create workbook object and select worksheet
-	wb = xl.load_workbook("Missions Auction Donations.xlsx")
-	ws = wb["Items and Donators"]
+	"""Populate 'items' data structure from entered xl file."""
+
+	print("\nEnter XL Sheet file path: (does not need extension .xlsx)")
+	fp = input(PREFIX_IN)
+
+	print("\nEnter Worksheet Name:")
+	ws_name = input(PREFIX_IN)
+
+	try:
+		wb = xl.load_workbook(fp + ".xlsx")
+		ws = wb[ws_name]
+
+	except (xl.utils.exceptions.InvalidFileException, KeyError):
+		print(PREFIX_MSG + "Error: Invalid Filename path or worksheet")
+		return
+
 
 	# Iterate thru each row and create a nested dict for each entry
-	for row in ws.iter_rows(min_row=2, max_row=153,
+	print(PREFIX_MSG + "Loading items from XL...")
+	for row in ws.iter_rows(min_row=2, max_row=200,
 							max_col=5, values_only=True):
+		posid = None
+
+		if row[0] == None:
+			posid = "empty"
+		else:
+			posid = int(row[0])
 
 		if row[1] is None:
 			desc = ""
 		else:
 			desc = row[1]
 
-		if row[2] is None:
-			value = "0.01"
 
+		if row[2] is None:
+			value = 0.01
 		else:
 			value = row[2]
 
+
 		if row[3] == None or row[4] == None:
 			donator = ""
-
 		else:
 			donator = str(row[3]) + " " + str(row[4])
 
-		items[str(int(row[0]))] = dict([("desc", desc), ("value", value),
-									("donator", donator), ("price", 0.0)])
 
+		items[posid] = Item(posid)
+		items[posid].desc = desc
+		items[posid].donator = donator
+		items[posid].est_val = value
+
+	print(PREFIX_MSG + "Finished")
 	return
 
 
 def totalAmt(items, bidders):
-	total = 0.0
-
-	for key, value in items.items():
-		total += value["price"]
-		
-	print("\n{}Total Amount Payed: {:.2f}".format(PREFIX_MSG, total))
-
-	return
-
+	pass
