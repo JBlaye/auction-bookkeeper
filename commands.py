@@ -28,7 +28,7 @@ Functions:
 	dBid: Not yet implemented
 	pItem: Not yet implemented
 	pBid: Not yet implemented
-	rec: Prints reciept for entered bidder
+	rec: Prints a reciept for the entered bidder #
 	sold: Records item bought by a bidder, along with purchased price
 	loadXL: Loads 'items' dict data from local XL file
 	totalAmt: Displays total profit of auction
@@ -52,6 +52,8 @@ PREFIX_ERROR = "(!) ERROR (!)"
 
 # Try initializing printer object & set a null object to disable
 # all printer functions if printer is not properly initialized
+p = None
+
 try:
 	p = printer.Usb(0x04b8, 0x0e28)
 	p.text("\n\n\nInitialized\n\n")
@@ -65,8 +67,6 @@ USB Printer Not Found!
 	Printer is either disconnected or unique id is not defined.
 	Restart program with printer connected to resume normal operation.
 		""")
-
-	p = None
 
 
 def canUse(usr_in, val):
@@ -299,37 +299,44 @@ def pBid():
 
 
 def rec(items, bidders, usr_args):
-	# Check if printer has been properly initialized
+	"""Prints a reciept for the entered bidder #"""
+
+	bidder_id = usr_args[1]
+
+	# Check if printer has been properly initialized & if entered bidder
+	# is valid
 	if p == None:
 		print(PREFIX_MSG + "Printer functions disabled.")
 		return
 
-	# Create temp dict ref for nested dict at 'entry'
-	tmp_bidder = bidders[usr_args[1]]
+	elif bidder_id not in bidders:
+		print(PREFIX_MSG + "Error: Invalid bidder ID#")
+		return
 
-	# Total up item prices and values
+	# Total up price of each item bought by bidder, also the est-value
 	total_price = 0.0
 	total_val = 0.0
-	for entry in tmp_bidder["items"]:
-		tmp_item = items[entry]
-		total_price += tmp_item["price"]
-		total_val += tmp_item["value"]
+	for key in bidders[bidder_id].cart:
+		total_price += items[key].price
+		total_val += items[key].est_val
 
 	# Series of text strings to create receipt format
 	p.set(align="center", width=2, height=2)
 	p.text("--Mission Hill Auction--")
 
 	p.set(width=1, height=1)
-	p.text("\n\nBidder #: " + usr_args[1])
-	p.text("\n" + tmp_bidder["name"])
+	p.text("\n\nBidder #: " + bidder_id)
+	p.text("\n" + bidders[bidder_id].name)
 
 	p.text("\n\nItems\n----------")
-	for entry in tmp_bidder["items"]:
-		tmp_item = items[entry]
-		p.text("\n\n#{:<4} {:<16} {:>20.2f}".format(entry, tmp_item["desc"], tmp_item["price"]))
+	for key in bidders[bidder_id].cart:
+		tmp_item = items[key]
+		p.text("\n\n#{:<4} {:<16} {:>20.2f}".format(key, tmp_item.desc,
+			tmp_item.price))
 
 	p.text("\n\n-{:<20} {:>20.2f}".format("Total", total_price))
-	p.text("\n\n\nTax Credit: {:.2f}\n---------------\n{}".format(total_price - total_val, date.today()))
+	p.text("\n\n\nTax Credit: {:.2f}\n---------------\n{}".format(total_price
+		- total_val, date.today()))
 	p.cut()
 
 	return
