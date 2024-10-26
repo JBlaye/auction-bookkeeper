@@ -388,7 +388,7 @@ def loadXL(items):
 		if row[0] == None:
 			posid = "empty"
 		else:
-			posid = int(row[0])
+			posid = str(int(row[0]))
 
 		if row[1] is None:
 			desc = ""
@@ -408,7 +408,8 @@ def loadXL(items):
 			donator = str(row[3]) + " " + str(row[4])
 
 
-		items[posid] = Item(posid)
+		items[posid] = Item()
+		items[posid].id = posid
 		items[posid].desc = desc
 		items[posid].donator = donator
 		items[posid].est_val = value
