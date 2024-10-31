@@ -30,7 +30,8 @@ Functions:
 	pBid: Not yet implemented
 	rec: Prints a reciept for the entered bidder #
 	sold: Records item bought by a bidder, along with purchased price
-	loadXL: Loads 'items' dict data from local XL file
+	loadXL: Loads 'items' data from entered XL file
+	exportXL: Exports bidder and item information into a local XL file
 	totalAmt: Displays total profit of auction
 
 ToDo:
@@ -402,6 +403,8 @@ def loadXL(items):
 			value = row[2]
 
 
+		# NOTE: change 'or' condition to 'and' to fix empty
+		# donator entries in item data
 		if row[3] == None or row[4] == None:
 			donator = ""
 		else:
@@ -416,6 +419,52 @@ def loadXL(items):
 
 	print(PREFIX_MSG + "Finished")
 	return
+
+# TODO
+# improve readability/documentation
+# implement reuse with autofilled sheets with matching dates
+# cleanup code
+def exportXL(items, bidders):
+	"""Exports bidder and item information into a local XL file"""
+
+	wb = xl.load_workbook("auction-results.xlsx")
+	ws_bidders = wb["Bidders-2024"]
+	ws_items = wb["Items-2024"]
+
+	item_count = len(items) - 1
+	item_pos = 1
+
+	for row in ws_items.iter_rows(min_row=2, max_row=item_count+1, 
+								  max_col=6):
+		row[0].value = items[str(item_pos)].id
+		row[1].value = items[str(item_pos)].desc
+		row[2].value = items[str(item_pos)].est_val
+		row[3].value = items[str(item_pos)].price
+		row[4].value = items[str(item_pos)].donator
+
+		item_pos += 1
+
+
+	bidder_count = len(bidders) + 1
+	bidder_rows = ws_bidders[2:bidder_count]
+	bidder_pos = 0
+
+	for key, obj in bidders.items():
+		items_bought = ""
+
+		bidder_rows[bidder_pos][0].value = obj.id
+		bidder_rows[bidder_pos][1].value = obj.name
+
+		for item in obj.cart:
+			items_bought += ", " + item
+
+		bidder_rows[bidder_pos][2].value = items_bought[2:]
+
+		bidder_pos += 1
+
+
+	wb.save("auction-results.xlsx")
+
 
 
 def totalAmt(items, bidders):

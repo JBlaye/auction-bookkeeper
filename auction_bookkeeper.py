@@ -64,7 +64,8 @@ except:
 # Init Possible command inputs tuple
 cds_list = ("exit", "help", "additem", "remitem", "addbid", "rembid",
 			"eitem", "ebid", "sdict", "ldict", "cdict", "ditem", "dbid",
-			"pitem", "pbid", "rec", "sold", "loadxl", "total")
+			"pitem", "pbid", "rec", "sold", "loadxl", "exportxl",
+			"total")
 
 # Display help function, displays available commands with some help text
 def display_help():
@@ -115,6 +116,8 @@ sold - Quick method of adding an item to the list of bought items
 	format: sold 'item #' 'bidder #' 'price'
 
 loadXL - Reloads items from a Microsoft Excel file
+
+exportXL - Exports item & bidder data to local XL file
 
 total - Displays total amount payed by all bidders""")
 
@@ -240,8 +243,12 @@ while main_loop:
 	elif usr_in[0].lower() == cds_list[17]:
 		cds.loadXL(items)
 
-	# Display total command
+	# Export XL document dommand
 	elif usr_in[0].lower() == cds_list[18]:
+		cds.exportXL(items, bidders)
+
+	# Display total command
+	elif usr_in[0].lower() == cds_list[19]:
 		cds.totalAmt(items, bidders)
 
 # Save current 'items' & 'bidders' dicts to json before exiting
