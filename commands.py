@@ -87,7 +87,7 @@ def pack(dict_in):
 	"""Returns a single dict used to store data in json
 
 	Arguments:
-		- dict_in
+		- dict_in (dictionary)
 
 	Converts dict_in, a dictionary full of objects, into a dictionary
 	full of lists. Uses the instance method exp() to get a list
@@ -108,7 +108,17 @@ def pack(dict_in):
 
 
 def unpack(dict_in, obj):
-	"""Returns a useable dict, populated with objects"""
+	"""Returns a useable dict, populated with objects
+
+	Arguments:
+		- dict_in (dictionary)
+		- obj (custom object)
+
+	Converts dict_in, a dictionary of lists, into a dictionary of
+	objects. Takes obj, either an 'Item' or 'Bidder' object and fills
+	'unpacked_dict' with objects whose fields are automatically
+	re-populated with data from each nested list and asigned a
+	numerical id, in string form, stored as its dictionary key."""
 	
 	if len(dict_in) == 0:
 		return dict_in
@@ -126,46 +136,20 @@ def addItem(items):
 	""""""
 
 	print(PREFIX_MSG + "Not yet implemented")
-	pass 
-	"""
-	# Create entry # ID and nested dictionary
-	entry = num_items + 1
+	pass
 
-	# Set item desc
-	print("\nEnter a short desc:")
-	desc = input(PREFIX_IN)
-
-	# Set item value
-	print("\nEnter value:")
-	loop = True
-	value = 0.0
-	while loop:
-		try:
-			value = float(input(PREFIX_IN))
-			loop = False
-
-		except ValueError:
-			print("\n" + PREFIX_MSG + "Invalid value, please try again:")
-
-	print("\nEnter donator's First & Last name:")
-	donator = input(PREFIX_IN)
-	
-	# Build nested dictionary
-	items[entry] = dict([("desc", desc), ("value", value),
-							("donator", donator), ("price", 0.0)])
-	temp_dict = items[entry]
-
-	# Display item info after creation
-	print("\n" + PREFIX_MSG + "Added item #" + entry)
-	print("Item desc: " + temp_dict["desc"])
-	print("Item value: " + str(temp_dict["value"]))
-	print("Donator: " + temp_dict["donator"])
-
-	return
-	"""
 
 def remItem(items, usr_args):
-	# Remove item entry and data from main 'items' dict
+	"""Remove item entry and data from main 'items' dict
+
+	Arguments:
+		- items (dictionary)
+		- usr_args (list)
+
+	First checks if the value the user entered is valid as a number,
+	then checks if the entered value is actually a real id # assigned
+	to an item. If both conditions are met, then the 'item' is removed
+	from the main 'items' dictionary"""
 
 	usr_in = canUse(usr_args[1], val=int)
 	if not usr_in:
@@ -182,23 +166,45 @@ def remItem(items, usr_args):
 
 
 def addBid(bidders):
-	# Create new bidder entry
+	"""Creates a new bidder entry
+
+	Arguments:
+		- bidders (dictionary)
+
+	Asks the user for further input and checks if the value entered
+	is useable as an id #. If so, it then asks for a first & last name
+	and then initializes a 'Bidder' object and adds it to the main
+	'bidders' dict with the id # as its dictionary key"""
+
 	print("\nEnter bidder #:")
 	entry_num = input(PREFIX_IN)
+
+	bidder_id = canUse(entry_num, val=int)
+	if not bidder_id:
+		return
 
 	print("\nEnter First & Last Name:")
 	name = input(PREFIX_IN)
 
 	# Create nested dict
 	bidders[entry_num] = Bidder()
-	bidders[entry_num].id = entry_num
+	bidders[entry_num].id = bidder_id
 	bidders[entry_num].name = name
 
 	return
 
 
 def remBid(bidders, usr_args):
-	# Remove bidder entry and data from main 'bidders' dict
+	"""Removes entered bidder from 'bidder' dict
+
+	Arguments:
+		- bidders (dictionary)
+		- usr_args (list)
+
+	First checks if the entered value is useable as a bidder id # and
+	then checks if the bidder # is actually assigned to a bidder. If so,
+	the 'bidder' is removed from the main 'bidders' dictionary"""
+
 	usr_in = canUse(usr_args[1], val=int)
 	if not usr_in:
 		return
@@ -224,6 +230,17 @@ def eBid():
 
 
 def sDict(items, bidders, usr_args):
+	"""Saves 'items' AND/OR 'bidders' dicts to persistent file
+
+	Arguments:
+		- items (dictionary)
+		- bidders (dictionary)
+		- usr_args (list)
+
+	Packs 'items' and/or 'bidders' dictionaries so they can be stored
+	as dictionaries of lists, which is then useable for json. Then
+	stores the data in their respective files"""
+
 	# If user added 'i' option, save items dict into json
 	if "i" in usr_args:
 		print(PREFIX_MSG + "Saving Items...")
@@ -244,6 +261,17 @@ def sDict(items, bidders, usr_args):
 
 
 def lDict(items, bidders, usr_args):
+	"""Loads 'items' AND/OR 'bidders' dicts from persistent file
+
+	Arguments:
+		- items (dictionary)
+		- bidders (dictionary)
+		- usr_args (list)
+	
+	Unpacks 'items' and/or 'bidders' dictionaries from their respective
+	json files and converts them back into dictionaries of objects so
+	they can be easily used by the program."""
+
 	# If user added 'i' option, load items dict from json
 	if "i" in usr_args:
 		print(PREFIX_MSG + "Loading items...")
@@ -264,6 +292,22 @@ def lDict(items, bidders, usr_args):
 			
 
 def cDict(items, bidders, usr_args):
+	"""Clears 'items' AND/OR 'bidders' dicts of all data in memory
+
+	Arguments:
+		- items (dictionary)
+		- bidders (dictionary)
+		- usr_args (list)
+
+	Clears 'items' and/or 'bidders' dictionaries of all objects from
+	memory, but does NOT tamper with persistent item and bidder data
+	stored in json files. 
+
+	If the dictionaries in memory are cleared, and the program exited
+	with the dictionaries still empty or modified, the new data in
+	memory will overwrite the existing persistent data in the respective
+	json files."""
+
 	# If user added 'i' option, empty the items dict
 	if "i" in usr_args:
 		print(PREFIX_MSG + "Clearing Items...")
@@ -300,7 +344,12 @@ def pBid():
 
 
 def rec(items, bidders, usr_args):
-	"""Prints a reciept for the entered bidder #"""
+	"""Prints a reciept for the entered bidder #
+
+	Arguments:
+		- items (dictionary)
+		- bidders (dictionary)
+		- usr_args (list)"""
 
 	bidder_id = usr_args[1]
 
@@ -344,7 +393,12 @@ def rec(items, bidders, usr_args):
 
 
 def sold(items, bidders, usr_args):
-	"""Add item to bidder 'cart' and set the bid 'price' of the item"""
+	"""Add item to bidder 'cart' and set the bid 'price' of the item
+
+	Arguments:
+		- items (dictionary)
+		- bidders (dictionary)
+		- user_args (list)"""
 	
 	item_id = usr_args[1]
 	bidder_id = usr_args[2]
@@ -363,7 +417,18 @@ def sold(items, bidders, usr_args):
 
 
 def loadXL(items):
-	"""Populate 'items' data structure from entered xl file."""
+	"""Populate 'items' data structure from entered xl file.
+
+	Arguments:
+		- items (dictionary)
+
+	Asks the user for input describing the exact filepath and worksheet
+	name of the xl file. Iterates over each cell in a set number
+	of rows and populates the main 'items' dictionary with 'Item'
+	objects, filling each field with its respective data value.
+
+	Note: Throughout the program, but most importantly here, the item &
+	bidder id #'s are stored as strings."""
 
 	print("\nEnter XL Sheet file path: (does not need extension .xlsx)")
 	fp = input(PREFIX_IN)

@@ -97,7 +97,7 @@ lDict - Loads items and/or bidders from respective files
 	format: lDict 'dict-letter' 'dict-letter'
 	enter 'i' for 'items' dict AND/OR 'b' for 'bidders' dict
 
-cDict - clear dictionary
+cDict - clear dictionary data from memory
 	format: cDict 'dict-letter' 'dict-letter'
 	enter 'i' for 'items' dict AND/OR 'b' for 'bidders' dict
 
